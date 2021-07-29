@@ -1,7 +1,7 @@
 import os
 # Use the package we installed
 from slack_bolt import App
-from api import Apis
+from api import MovieApis
 
 # Initializes your app with your bot token and signing secret
 app = App(
@@ -64,6 +64,7 @@ def update_home_tab(client, event, logger):
 def action_button_click(ack, client, body, logger):
     try:
         ack()
+
         # views.publish is the method that your app uses to push a view to the Home tab
         client.views_open(
             trigger_id=body["trigger_id"],
@@ -85,15 +86,20 @@ def action_button_click(ack, client, body, logger):
                 },
                 "blocks": [
                     {
-                        "type": "input",
-                        "block_id": "movie_input",
-                        "element": {
-                            "type": "plain_text_input",
-                            "action_id": "plain_text_input_action"
+                        "type": "section",
+                        "block_id": "section678",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Pick an item from the dropdown list"
                         },
-                        "label": {
-                            "type": "plain_text",
-                            "text": "Select a movie:"
+                        "accessory": {
+                            "action_id": "movie_search",
+                            "type": "external_select",
+                            "placeholder": {
+                                    "type": "plain_text",
+                                "text": "Select an item"
+                            },
+                            "min_query_length": 2
                         }
                     }
                 ]
@@ -103,9 +109,8 @@ def action_button_click(ack, client, body, logger):
     except Exception as e:
         logger.error(f"Error loading search window: {e}")
 
+
 # https://slack.dev/bolt-python/concepts#view_submissions
-
-
 @app.view('movie_modal')
 def handle_movie_submission(ack, body, client, logger):
     ack()
@@ -150,6 +155,14 @@ def handle_movie_submission(ack, body, client, logger):
     finally:
         client.chat_postMessage(text=payload, channel=sender['id'])
     return
+
+# Example of responding to an external_select options request
+
+
+@app.options("movie_search")
+def show_options(ack):
+    movie_list = MovieApis.get_list_of_movies('en-US', 4)
+    ack(options=movie_list)
 
 
 # Start your app
