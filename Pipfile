@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 slack-bolt = "*"
+autopep8 = "*"
+requests = "*"
 
 [dev-packages]
 
