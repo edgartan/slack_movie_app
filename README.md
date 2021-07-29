@@ -5,6 +5,7 @@ ngrok http 3000
 https://www.themoviedb.org/settings/api
 
 # To Run
+pipenv install
 pipenv run python app.py
 
 Update the request URL: https://api.slack.com/apps/A029AU6BDD4/event-subscriptions?
