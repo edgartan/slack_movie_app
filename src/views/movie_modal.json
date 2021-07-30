@@ -1,0 +1,35 @@
+{
+    "type": "modal",
+    "callback_id": "movie_modal",
+    "title": {
+        "type": "plain_text",
+        "text": "Movie Info"
+    },
+    "submit": {
+        "type": "plain_text",
+        "text": "Submit"
+    },
+    "close": {
+        "type": "plain_text",
+        "text": "Cancel"
+    },
+    "blocks": [
+        {
+            "type": "section",
+            "block_id": "movie_selection",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Start typing the name of a movie..."
+            },
+            "accessory": {
+                "action_id": "movie_search",
+                "type": "external_select",
+                "placeholder": {
+                        "type": "plain_text",
+                    "text": "Select a movie"
+                },
+                "min_query_length": 3
+            }
+        }
+    ]
+}

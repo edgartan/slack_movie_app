@@ -18,7 +18,7 @@ class MovieApis:
         r = requests.get(
             f"https://api.themoviedb.org/3/movie/{movie_id}", params)
         data = json.loads(r.text)
-        
+
         return data
 
     @staticmethod
@@ -38,9 +38,7 @@ class MovieApis:
                 movie = {"text": {"type": "plain_text",
                                   "text": item["original_title"]}, "value": str(item["id"])}
                 movie_list.append(movie)
-        print(movie_list)
         return movie_list
-
 
 
 # Start your app
