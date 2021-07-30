@@ -76,17 +76,12 @@ def handle_movie_submission(ack, body, client, logger):
                     }
         }
     ]
-    client.chat_postMessage(
-        blocks=new_payload, channel=user, text='Movie info sent')
-    payload = "Movie info sent"
-    # try:
-    #     client.chat_postMessage(blocks=new_payload)
-    #     payload = "Movie info sent"
-    # except Exception as e:
-    #     payload = "something went wrong"
-    # finally:
-    #     client.chat_postMessage(text=payload)
-    # return
+    try:
+        payload = "Movie info sent"
+        client.chat_postMessage(blocks=new_payload, channel=user, text=payload)
+    except Exception as e:
+        payload = "💩 something went wrong. Try again!"
+        client.chat_postMessage(text=payload, channel=user)
 
 # Example of responding to an external_select options request
 
@@ -98,8 +93,8 @@ def show_options(ack):
 
 
 @app.action("movie_search")
-def handle_action():
-    pass
+def handle_action(ack):
+    ack()
 
 
 # Start your app
