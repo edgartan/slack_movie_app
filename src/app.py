@@ -1,4 +1,5 @@
 import os
+import json
 from slack_bolt import App
 from api import MovieApis
 import utils
@@ -13,48 +14,9 @@ app = App(
 @app.event("app_home_opened")
 def update_home_tab(client, event, logger):
     try:
-        # views.publish is the method that your app uses to push a view to the Home tab
-        client.views_publish(
-            # the user that opened your app"s app home
-            user_id=event["user"],
-            # the view object that appears in the app home
-            view={
-                "type": "home",
-                "callback_id": "home_view",
-                "blocks": [
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "*Welcome to Movie Info! :tada:*"
-                        }
-                    },
-                    {
-                        "type": "divider"
-                    },
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "Click the button below to pick a movie."
-                        }
-                    },
-                    {
-                        "type": "actions",
-                        "elements": [
-                            {
-                                "type": "button",
-                                "text": {
-                                    "type": "plain_text",
-                                    "text": "Select a Movie!"
-                                },
-                                "action_id": "button_click"
-                            }
-                        ]
-                    }
-                ]
-            }
-        )
+        with open('./views/home.json') as f:
+            home = json.load(f)
+        client.views_publish(user_id=event["user"], view=home)
 
     except Exception as e:
         logger.error(f"Error publishing home tab: {e}")
@@ -64,50 +26,12 @@ def update_home_tab(client, event, logger):
 def action_button_click(ack, client, body, logger):
     try:
         ack()
-
-        # views.publish is the method that your app uses to push a view to the Home tab
-        client.views_open(
-            trigger_id=body["trigger_id"],
-            # the view object that appears in the app home
-            view={
-                "type": "modal",
-                "callback_id": "movie_modal",
-                "title": {
-                    "type": "plain_text",
-                    "text": "Movie Info"
-                },
-                "submit": {
-                    "type": "plain_text",
-                    "text": "Submit"
-                },
-                "close": {
-                    "type": "plain_text",
-                    "text": "Cancel"
-                },
-                "blocks": [
-                    {
-                        "type": "section",
-                        "block_id": "movie_selection",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "Pick an item from the dropdown list"
-                        },
-                        "accessory": {
-                            "action_id": "movie_search",
-                            "type": "external_select",
-                            "placeholder": {
-                                    "type": "plain_text",
-                                "text": "Select an item"
-                            },
-                            "min_query_length": 3
-                        }
-                    }
-                ]
-            }
-        )
+        with open('./views/movie_modal.json') as f:
+            movie_modal = json.load(f)
+        client.views_open(trigger_id=body["trigger_id"], view=movie_modal)
 
     except Exception as e:
-        logger.error(f"Error loading search window: {e}")
+        logger.error(f"Error loading movie search window: {e}")
 
 
 # https://slack.dev/bolt-python/concepts#view_submissions
@@ -123,8 +47,6 @@ def handle_movie_submission(ack, body, client, logger):
     data = MovieApis.get_movie_details(movie_id, "en-US")
     poster_path = data["poster_path"]
     poster_url = f"https://image.tmdb.org/t/p/w600_and_h900_bestv2/{poster_path}"
-
-
 
     new_payload = [
         {
@@ -154,7 +76,8 @@ def handle_movie_submission(ack, body, client, logger):
                     }
         }
     ]
-    client.chat_postMessage(blocks=new_payload, channel=user)
+    client.chat_postMessage(
+        blocks=new_payload, channel=user, text='Movie info sent')
     payload = "Movie info sent"
     # try:
     #     client.chat_postMessage(blocks=new_payload)
@@ -175,9 +98,8 @@ def show_options(ack):
 
 
 @app.action("movie_search")
-def handle_some_action(ack, body, logger):
-    ack()
-    logger.info(body)
+def handle_action():
+    pass
 
 
 # Start your app

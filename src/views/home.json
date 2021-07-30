@@ -1,0 +1,36 @@
+{
+    "type": "home",
+    "callback_id": "home_view",
+    "blocks": [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Welcome to Movie Info! :tada:*"
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Click the button below to pick a movie."
+            }
+        },
+        {
+            "type": "actions",
+            "elements": [
+                {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Select a Movie!"
+                    },
+                    "action_id": "button_click"
+                }
+            ]
+        }
+    ]
+}
