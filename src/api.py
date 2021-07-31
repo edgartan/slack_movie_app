@@ -19,6 +19,7 @@ class MovieApis:
         try:
             r = requests.get(
                 f"https://api.themoviedb.org/3/movie/{movie_id}", params)
+            r.raise_for_status()
         except Exception as e:
             logging.exception(f"Error getting movie details: {e}")
 
@@ -39,7 +40,8 @@ class MovieApis:
             try:
                 r = requests.get(
                     "https://api.themoviedb.org/3/movie/now_playing", params)
-            except Exception as e:
+                r.raise_for_status()
+            except requests.exceptions.RequestException as e:
                 logging.exception(f"Error getting list of movies: {e}")
             data = json.loads(r.text)
             for item in data["results"]:
