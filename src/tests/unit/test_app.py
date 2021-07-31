@@ -9,7 +9,7 @@ from slack_sdk import WebClient
 
 class TestApp(TestCase):
     def setUp(self) -> None:
-        patch("os.environ.get")
+        patch("os.environ.get").start()
         self.fake = Faker()
         self.addCleanup(patch.stopall)
         self.client = MagicMock(spec=WebClient)
@@ -56,7 +56,7 @@ class TestApp(TestCase):
         expected_movie_id = self.fake.word()
         expected_region = "en-US"
         self.body = {"view": {"state": {"values": {"movie_selection": {"movie_search": {
-            "movie_search": {"value": expected_movie_id}}}}}}, "user": {"id": mock_user}}
+            "selected_option": {"value": expected_movie_id}}}}}}, "user": {"id": mock_user}}
 
         app.handle_movie_submission(
             self.ack, self.body, self.client, self.logger)

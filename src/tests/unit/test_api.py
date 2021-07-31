@@ -1,3 +1,4 @@
+import os
 from unittest import TestCase
 from unittest.mock import patch
 from faker import Faker
@@ -6,19 +7,19 @@ from api import MovieApis
 
 class TestApp(TestCase):
     def setUp(self) -> None:
-        patch("os.environ.get")
         self.fake = Faker()
         self.addCleanup(patch.stopall)
         return super().setUp()
 
     def test_get_movie_details_calls_requests(self):
         expected_movie_id = self.fake.word()
-        expected_region = 'en-US'
+        expected_region = "en-US"
         expected_url = f"https://api.themoviedb.org/3/movie/{expected_movie_id}"
         mock_get = patch("requests.get").start()
         patch("json.loads").start()
         expected_params = {
-            "api_key": None,
+            # Import happens before any patching, so keeping this in line with api.py
+            "api_key": os.environ.get("API_KEY"),
             "region": expected_region
         }
 
@@ -28,9 +29,8 @@ class TestApp(TestCase):
 
     def test_get_movie_details_returns_data(self):
         expected_movie_id = self.fake.word()
-        expected_region = 'en-US'
+        expected_region = "en-US"
         expected_data = self.fake.word()
-        patch("requests.get").start()
         mock_loads = patch("json.loads").start()
         mock_loads.return_value = expected_data
 

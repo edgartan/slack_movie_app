@@ -1,10 +1,13 @@
 import os
 import json
+import logging
 from slack_bolt import App
 from api import MovieApis
 import utils
 
 # Initializes your app with your bot token and signing secret
+logging.basicConfig(filename='application.log',
+                    encoding='utf-8', level=logging.DEBUG)
 app = App(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
@@ -41,15 +44,13 @@ def handle_movie_submission(ack, body, client, logger):
     ack()
     user = body["user"]["id"]
     values = body["view"]["state"]["values"]
-    movie_id = values["movie_selection"]["movie_search"]["movie_search"]["value"]
-
+    movie_id = values["movie_selection"]["movie_search"]["selected_option"]["value"]
     # TODO: Is there a way to source localized language that we could pass in here?
     data = MovieApis.get_movie_details(movie_id, "en-US")
     poster_path = data["poster_path"]
     poster_url = f"https://image.tmdb.org/t/p/w600_and_h900_bestv2/{poster_path}"
     movie_message = utils.create_message_blocks(
         data["original_title"], data["release_date"], data["overview"], poster_url)
-
     try:
         payload = "Movie info sent"
         client.chat_postMessage(blocks=movie_message,
@@ -62,6 +63,7 @@ def handle_movie_submission(ack, body, client, logger):
 
 @app.options("movie_search")
 def show_list_of_movies(ack):
+    # BUG: typeahead doesnt seem to be filtering on my external list
     movie_list = MovieApis.get_list_of_movies(5)
     ack(options=movie_list)
 
