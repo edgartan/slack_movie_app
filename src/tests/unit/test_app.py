@@ -1,11 +1,9 @@
 from logging import Logger
 import os
-import pytest
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import patch, AsyncMock
 from faker import Faker
 import app
-from slack_sdk import WebClient
 
 
 class TestApp(IsolatedAsyncioTestCase):
