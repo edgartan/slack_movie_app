@@ -11,8 +11,6 @@ class TestApp(TestCase):
     def setUp(self) -> None:
         self.fake = Faker()
         self.addCleanup(patch.stopall)
-        # self.mock_App = patch("slack_bolt.App").start()
-        # self.mock_env_get = patch("os.environ.get").start()
         self.client = MagicMock(spec=WebClient)
         self.logger = MagicMock(spec=Logger)
         self.ack = MagicMock()
@@ -82,61 +80,18 @@ class TestApp(TestCase):
         mock_convert_date.assert_called_once_with(expected_date)
 
     def test_handle_movie_submission_posts_message(self):
-        # For the channel
-        expected_user = self.fake.word()
-        self.body = {"view": {"state": {"values": {"movie_selection": {"movie_search": {
-            "movie_search": {"value": '1'}}}}}}, "user": {"id": expected_user}}
-        # For the text
+        patch("api.MovieApis.get_movie_details").start()
+        expected_blocks = self.fake.word()
+        mock_create_message_blocks = patch(
+            "utils.create_message_blocks").start()
+        mock_create_message_blocks.return_value = expected_blocks
         expected_payload = "Movie info sent"
-        # For the blocks
-        expected_url_section = self.fake.word()
-        expected_url = f"https://image.tmdb.org/t/p/w600_and_h900_bestv2/{expected_url_section}"
-        expected_date = self.fake.date()
-        mock_date = patch("utils.convert_date").start()
-        mock_date.return_value = expected_date
-        expected_overview = self.fake.word()
-        expected_title = self.fake.word()
-        expected_details = {"release_date": expected_date,
-                            "poster_path": expected_url_section,
-                            "original_title": expected_title,
-                            "overview": expected_overview}
-        mock_get_movie_details = patch(
-            "api.MovieApis.get_movie_details").start()
-        mock_get_movie_details.return_value = expected_details
-        expected_blocks = [
-            {
-                "type": "section",
-                "text": {
-                        "type": "mrkdwn",
-                        "text": "Here's is the movie info you requested!"
-                }
-            },
-            {
-                "type": "header",
-                "text": {
-                        "type": "plain_text",
-                        "text": expected_title
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                        "type": "mrkdwn",
-                        "text": "*Release date:* " + expected_date + " \n" + expected_overview
-                },
-                "accessory": {
-                    "type": "image",
-                    "image_url": expected_url,
-                    "alt_text": "movie poster"
-                }
-            }
-        ]
 
         app.handle_movie_submission(
             self.ack, self.body, self.client, self.logger)
 
         self.client.chat_postMessage.assert_called_once_with(
-            blocks=expected_blocks, channel=expected_user, text=expected_payload)
+            blocks=expected_blocks, channel=self.body["expected_user"]["expected_id"], text=expected_payload)
 
     def test_show_list_of_movies_calls_ack_with_options(self):
         expected_movie_list = self.fake.word()

@@ -7,7 +7,7 @@ def convert_date(date):
     return dt
 
 
-def create_message_block(title, date, overview, poster_url):
+def create_message_blocks(title, date, overview, poster_url):
     movie_message = [
         {
             "type": "section",
@@ -37,7 +37,8 @@ def create_message_block(title, date, overview, poster_url):
         }
     ]
     return movie_message
-    
+
+
 # Start your app
 if __name__ == "__main__":
     convert_date()

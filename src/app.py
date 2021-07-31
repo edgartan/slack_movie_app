@@ -47,7 +47,7 @@ def handle_movie_submission(ack, body, client, logger):
     data = MovieApis.get_movie_details(movie_id, "en-US")
     poster_path = data["poster_path"]
     poster_url = f"https://image.tmdb.org/t/p/w600_and_h900_bestv2/{poster_path}"
-    movie_message = utils.create_message_block(
+    movie_message = utils.create_message_blocks(
         data["original_title"], data["release_date"], data["overview"], poster_url)
 
     try:
