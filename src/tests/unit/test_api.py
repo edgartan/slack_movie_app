@@ -41,10 +41,29 @@ class TestApp(TestCase):
 
     def test_get_list_of_movies_call_requests_x_times(self):
         expected_pages = 4
-        mock_loads = patch("json.loads").start()
+        patch("json.loads").start()
         mock_get = patch("requests.get").start()
 
         MovieApis.get_list_of_movies(expected_pages)
 
         self.assertEqual(mock_get.call_count, expected_pages)
-        self.assertEqual(mock_loads.call_count, expected_pages)
+
+    def test_get_list_of_movies_returns_movie_list(self):
+        expected_pages = 1
+        patch("requests.get").start()
+        mock_loads = patch("json.loads").start()
+        expected_title = self.fake.word()
+        expected_id = self.fake.pyint()
+        mock_loads.return_value = {"results": [
+            {"original_title": expected_title, "id": expected_id}]}
+        expected_movie_list = [{
+            "text": {
+                "type": "plain_text",
+                        "text": expected_title
+            },
+            "value": str(expected_id)
+        }]
+
+        actual = MovieApis.get_list_of_movies(expected_pages)
+
+        self.assertEqual(actual, expected_movie_list)
