@@ -41,53 +41,27 @@ def handle_movie_submission(ack, body, client, logger):
     ack()
     user = body["user"]["id"]
     values = body["view"]["state"]["values"]
-    movie_id = values["movie_selection"]["movie_search"]["selected_option"]["value"]
+    movie_id = values["movie_selection"]["movie_search"]["movie_search"]["value"]
 
     # TODO: Is there a way to source localized language that we could pass in here?
     data = MovieApis.get_movie_details(movie_id, "en-US")
     poster_path = data["poster_path"]
     poster_url = f"https://image.tmdb.org/t/p/w600_and_h900_bestv2/{poster_path}"
+    movie_message = utils.create_message_blocks(
+        data["original_title"], data["release_date"], data["overview"], poster_url)
 
-    new_payload = [
-        {
-            "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "Here's is the movie info you requested!"
-                    }
-        },
-        {
-            "type": "header",
-                    "text": {
-                        "type": "plain_text",
-                        "text": data["original_title"]
-                    }
-        },
-        {
-            "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "*Release date:* " + utils.convert_date(data["release_date"]) + " \n" + data["overview"]
-                    },
-            "accessory": {
-                        "type": "image",
-                        "image_url": poster_url,
-                        "alt_text": "movie poster"
-                    }
-        }
-    ]
     try:
         payload = "Movie info sent"
-        client.chat_postMessage(blocks=new_payload, channel=user, text=payload)
+        client.chat_postMessage(blocks=movie_message,
+                                channel=user, text=payload)
     except Exception as e:
         payload = "💩 something went wrong. Try again!"
+        logger.error("Couldn't send movie details to user")
         client.chat_postMessage(text=payload, channel=user)
-
-# Example of responding to an external_select options request
 
 
 @app.options("movie_search")
-def show_options(ack):
+def show_list_of_movies(ack):
     movie_list = MovieApis.get_list_of_movies(5)
     ack(options=movie_list)
 
