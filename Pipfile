@@ -7,10 +7,13 @@ name = "pypi"
 slack-bolt = "*"
 requests = "*"
 requests-cache = "*"
+aiohttp = "*"
+asyncio = "*"
 
 [dev-packages]
 autopep8 = "*"
 pytest = "*"
+pytest-asyncio = "*"
 faker = "*"
 
 [requires]

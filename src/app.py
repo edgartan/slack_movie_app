@@ -1,37 +1,36 @@
 import os
 import json
 import logging
-from slack_bolt import App
+from slack_bolt.async_app import AsyncApp
 from api import MovieApis
 import utils
 
-# Initializes your app with your bot token and signing secret
-logging.basicConfig(filename='application.log',
-                    encoding='utf-8', level=logging.DEBUG)
-app = App(
+# Initializes app
+logging.basicConfig(filename='application.log', level=logging.DEBUG)
+app = AsyncApp(
     token=os.environ.get("SLACK_BOT_TOKEN"),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
 
 
 @app.event("app_home_opened")
-def update_home_tab(client, event, logger):
+async def update_home_tab(client, event, logger):
     try:
         with open('./views/home.json') as f:
             home = json.load(f)
-        client.views_publish(user_id=event["user"], view=home)
+        await client.views_publish(user_id=event["user"], view=home)
 
     except Exception as e:
         logger.error(f"Error publishing home tab: {e}")
 
 
 @app.action("button_click")
-def action_button_click(ack, client, body, logger):
+async def action_button_click(ack, client, body, logger):
     try:
-        ack()
+        await ack()
         with open('./views/movie_modal.json') as f:
             movie_modal = json.load(f)
-        client.views_open(trigger_id=body["trigger_id"], view=movie_modal)
+        await client.views_open(trigger_id=body["trigger_id"], view=movie_modal)
 
     except Exception as e:
         logger.error(f"Error loading movie search window: {e}")
@@ -39,9 +38,9 @@ def action_button_click(ack, client, body, logger):
 
 # https://slack.dev/bolt-python/concepts#view_submissions
 @app.view("movie_modal")
-def handle_movie_submission(ack, body, client, logger):
+async def handle_movie_submission(ack, body, client, logger):
 
-    ack()
+    await ack()
     user = body["user"]["id"]
     values = body["view"]["state"]["values"]
     movie_id = values["movie_selection"]["movie_search"]["selected_option"]["value"]
@@ -53,24 +52,24 @@ def handle_movie_submission(ack, body, client, logger):
         data["original_title"], data["release_date"], data["overview"], poster_url)
     try:
         payload = "Movie info sent"
-        client.chat_postMessage(blocks=movie_message,
+        await client.chat_postMessage(blocks=movie_message,
                                 channel=user, text=payload)
     except Exception as e:
         payload = "💩 something went wrong. Try again!"
         logger.error("Couldn't send movie details to user")
-        client.chat_postMessage(text=payload, channel=user)
+        await client.chat_postMessage(text=payload, channel=user)
 
 
 @app.options("movie_search")
-def show_list_of_movies(ack):
+async def show_list_of_movies(ack):
     # BUG: typeahead doesnt seem to be filtering on my external list
     movie_list = MovieApis.get_list_of_movies(5)
-    ack(options=movie_list)
+    await ack(options=movie_list)
 
 
 @app.action("movie_search")
-def handle_action(ack):
-    ack()
+async def handle_action(ack):
+    await ack()
 
 
 # Start your app
