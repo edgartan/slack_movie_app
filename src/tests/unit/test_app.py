@@ -9,6 +9,7 @@ from slack_sdk import WebClient
 
 class TestApp(TestCase):
     def setUp(self) -> None:
+        patch("os.environ.get")
         self.fake = Faker()
         self.addCleanup(patch.stopall)
         self.client = MagicMock(spec=WebClient)
