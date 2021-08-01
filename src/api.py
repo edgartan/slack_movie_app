@@ -1,16 +1,18 @@
+import sys
+sys.path.insert(1, "lib/")
+
 import os
 import requests
-import requests_cache
+import cachetools.func
 import json
 import logging
 
 
 class MovieApis:
     api_key = os.environ.get("API_KEY")
-    requests_cache.install_cache(
-        "movie_cache", backend="sqlite", expire_after=360)
 
     @staticmethod
+    @cachetools.func.ttl_cache(maxsize=20, ttl=300)
     def get_movie_details(movie_id: str, region: str) -> dict:
         params = {
             "api_key": MovieApis.api_key,
@@ -28,6 +30,7 @@ class MovieApis:
         return data
 
     @staticmethod
+    @cachetools.func.ttl_cache(maxsize=5, ttl=300)
     def get_list_of_movies(pages: int) -> list:
         movie_list = []
         params = {

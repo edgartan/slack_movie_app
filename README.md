@@ -78,7 +78,7 @@ cd src
 pipenv install --dev
 
 # Run tests
-pipenv run pytest
+pipenv run python -m pytest
 ```
 ## Approach
 I started by reading through the [Getting Started Guide for Bolt][7] as well as a couple other getting started resources. From there I laid out a general plan of what I was planning to accomplish.
@@ -86,7 +86,7 @@ I started by reading through the [Getting Started Guide for Bolt][7] as well as 
 1. Create a hello world slack app
 2. Figure out the general workflow of how to send a message
 3. Connect to the MovieDB API and return actual data
-4. Modify the UI elements to meet the requirements
+4. Modify the UI elements to meet the requirements with [Block Kits][10]
 5. Create unit tests
 6. Add better error handling and logging
 7. Create a good readme
@@ -121,3 +121,8 @@ Please make sure to update tests as appropriate.
 [7]: https://slack.dev/bolt-python/tutorial/getting-started
 [8]: https://github.com/slackapi/bolt-python/tree/main/examples/aws_lambda
 [9]: https://choosealicense.com/licenses/mit/
+[10]: https://app.slack.com/block-kit-builder/
+
+https://github.com/slackapi/bolt-examples-aws-re-invent-2020/tree/main/api-gateway-lambda/python
+https://github.com/zappa/Zappa
+https://chatbotslife.com/developing-your-own-bot-for-slack-and-serverless-deploy-a49136f68b7a
