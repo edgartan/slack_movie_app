@@ -64,7 +64,7 @@ For example: http://ad646ed78782.ngrok.io/slack/events
    └── app.py: Entry point for the slack app, handles the interactions between the user and the rest of the application
    └── api.py: Handles the external calls to the Movie Database
    └── utils.py: Useful methods for cleaner looking code
-   └── conftest.py: Used to definte the test root path
+   └── conftest.py: Used to define the test root path
    └── tests: All programmatic tests
    └── views: Contains the json files of the Slack Block Kits
 ```
@@ -99,7 +99,7 @@ I would have likely done testing, error handling, and logging with smaller items
 ## Roadmap
 As I finish items on my roadmap I will move them to the approach section. This roadmap gives me an ordered list of my top priorities as well as any upcoming changes I would like to make.
 
-8. Deploy to cloud hosted environement manually([aws lambda][8])
+8. Deploy to cloud hosted environment manually([aws lambda][8])
 8. Script out deployment
 8. Create infrastructure as code (aws_cdk)
 8. Create CI/CD pipeline (github actions)
