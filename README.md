@@ -1,3 +1,15 @@
+- [Overview](#overview)
+- [Running locally](#running-locally)
+  - [1. Setup environment variables](#1-setup-environment-variables)
+  - [2. Setup your local project](#2-setup-your-local-project)
+  - [3. Start servers](#3-start-servers)
+  - [4. Configure your slack app](#4-configure-your-slack-app)
+- [File/Folder Structure](#filefolder-structure)
+- [Testing](#testing)
+- [Approach](#approach)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 ## Overview
 
 This is a Slack app built with the [Bolt for Python framework][2] that pulls a list of movies and returns the details for users.
