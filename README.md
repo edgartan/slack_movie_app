@@ -23,7 +23,7 @@ You can get your Bot Token and Signing Secret on the [Basic Information][5] tab.
 The [movie DB API instructions][6] walk you through getting a token.
 
 ```zsh
-# Replace with your signing secret and token
+# Replace with your signing secret, token, and key
 export SLACK_BOT_TOKEN=<your-bot-token>
 export SLACK_SIGNING_SECRET=<your-signing-secret>
 export API_KEY=<your-movie-api-key>
