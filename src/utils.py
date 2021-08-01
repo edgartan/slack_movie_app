@@ -1,13 +1,13 @@
 from datetime import datetime
 
 
-def convert_date(date):
+def convert_date(date: str) -> str:
     dt = datetime.strptime(date, "%Y-%m-%d")
     dt = dt.strftime("%b %d, %Y")
     return dt
 
 
-def create_message_blocks(title, date, overview, poster_url):
+def create_message_blocks(title: str, date: str, overview: str, poster_url: str) -> list:
     movie_message = [
         {
             "type": "section",
