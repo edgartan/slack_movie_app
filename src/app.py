@@ -1,7 +1,9 @@
 import os
 import json
 import logging
+from typing import Callable
 from slack_bolt.async_app import AsyncApp
+from slack_sdk import WebClient
 from api import MovieApis
 import utils
 
@@ -14,7 +16,7 @@ app = AsyncApp(
 
 
 @app.event("app_home_opened")
-async def update_home_tab(client, event, logger):
+async def update_home_tab(client: WebClient, event: dict, logger: logging.Logger) -> None:
     try:
         with open('./views/home.json') as f:
             home = json.load(f)
@@ -25,7 +27,7 @@ async def update_home_tab(client, event, logger):
 
 
 @app.action("button_click")
-async def action_button_click(ack, client, body, logger):
+async def action_button_click(ack: Callable, client: WebClient, body: dict, logger: logging.Logger) -> None:
     try:
         await ack()
         with open('./views/movie_modal.json') as f:
@@ -38,7 +40,7 @@ async def action_button_click(ack, client, body, logger):
 
 # https://slack.dev/bolt-python/concepts#view_submissions
 @app.view("movie_modal")
-async def handle_movie_submission(ack, body, client, logger):
+async def handle_movie_submission(ack: Callable, body: dict, client: WebClient, logger: logging.Logger) -> None:
 
     await ack()
     user = body["user"]["id"]
@@ -53,7 +55,7 @@ async def handle_movie_submission(ack, body, client, logger):
     try:
         payload = "Movie info sent"
         await client.chat_postMessage(blocks=movie_message,
-                                channel=user, text=payload)
+                                      channel=user, text=payload)
     except Exception as e:
         payload = "💩 something went wrong. Try again!"
         logger.error("Couldn't send movie details to user")
@@ -61,14 +63,14 @@ async def handle_movie_submission(ack, body, client, logger):
 
 
 @app.options("movie_search")
-async def show_list_of_movies(ack):
+async def show_list_of_movies(ack: Callable) -> None:
     # BUG: typeahead doesnt seem to be filtering on my external list
     movie_list = MovieApis.get_list_of_movies(5)
     await ack(options=movie_list)
 
 
 @app.action("movie_search")
-async def handle_action(ack):
+async def handle_action(ack: Callable) -> None:
     await ack()
 
 

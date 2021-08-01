@@ -11,7 +11,7 @@ class MovieApis:
         "movie_cache", backend="sqlite", expire_after=360)
 
     @staticmethod
-    def get_movie_details(movie_id, region):
+    def get_movie_details(movie_id: str, region: str) -> dict:
         params = {
             "api_key": MovieApis.api_key,
             "region": region
@@ -28,7 +28,7 @@ class MovieApis:
         return data
 
     @staticmethod
-    def get_list_of_movies(pages):
+    def get_list_of_movies(pages: int) -> list:
         movie_list = []
         params = {
             "api_key": MovieApis.api_key,
