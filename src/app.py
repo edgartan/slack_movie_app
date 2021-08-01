@@ -4,6 +4,7 @@ import logging
 from typing import Callable
 from slack_bolt.async_app import AsyncApp
 from slack_sdk import WebClient
+from slack_bolt.adapter.aws_lambda import SlackRequestHandler
 from api import MovieApis
 import utils
 
@@ -11,7 +12,8 @@ import utils
 logging.basicConfig(filename='application.log', level=logging.DEBUG)
 app = AsyncApp(
     token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET",
+                                  process_before_response=True)
 )
 
 
@@ -74,6 +76,9 @@ async def handle_action(ack: Callable) -> None:
     await ack()
 
 
-# Start your app
-if __name__ == "__main__":
-    app.start(port=int(os.environ.get("PORT", 3000)))
+# # Start your app
+# if __name__ == "__main__":
+#     app.start(port=int(os.environ.get("PORT", 3000)))
+def handler(event, context):
+    slack_handler = SlackRequestHandler(app=app)
+    return slack_handler.handle(event, context)
