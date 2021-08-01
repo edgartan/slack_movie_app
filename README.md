@@ -4,7 +4,6 @@ This is a Slack app built with the [Bolt for Python framework][2] that pulls a l
 Contents
 ========
 - [](#)
-  - [Overview](#overview)
   - [Running locally](#running-locally)
     - [1. Setup environment variables](#1-setup-environment-variables)
     - [2. Setup your local project](#2-setup-your-local-project)
@@ -105,6 +104,14 @@ As I finish items on my roadmap I will move them to the approach section. This r
 8. Create infrastructure as code (aws_cdk)
 8. Create CI/CD pipeline (github actions)
 
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[MIT][9]
+
 [1]: https://api.slack.com/apps/A029AU6BDD4/event-subscriptions?
 [2]: https://slack.dev/bolt-python/
 [3]: https://slack.dev/bolt-python/tutorial/getting-started#setting-up-events
@@ -113,11 +120,4 @@ As I finish items on my roadmap I will move them to the approach section. This r
 [6]: https://developers.themoviedb.org/3/getting-started/introduction
 [7]: https://slack.dev/bolt-python/tutorial/getting-started
 [8]: https://github.com/slackapi/bolt-python/tree/main/examples/aws_lambda
-
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[9]: https://choosealicense.com/licenses/mit/
