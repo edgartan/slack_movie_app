@@ -1,38 +1,44 @@
-import os
-import json
-import logging
-from typing import Callable
-from slack_bolt.async_app import AsyncApp
-from slack_sdk import WebClient
-from api import MovieApis
+import sys
+sys.path.insert(1, "lib/")
+
 import utils
+from api import MovieApis
+from slack_bolt.adapter.aws_lambda import SlackRequestHandler
+from slack_sdk import WebClient
+from slack_bolt import App
+from typing import Callable
+import logging
+import json
+import os
+
+
 
 # Initializes app
-logging.basicConfig(filename='application.log', level=logging.DEBUG)
-app = AsyncApp(
-    token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
-)
+SlackRequestHandler.clear_all_log_handlers()
+logging.basicConfig(level=logging.DEBUG)
+app = App(token=os.environ.get("SLACK_BOT_TOKEN"),
+          signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
+          process_before_response=True)
 
 
 @app.event("app_home_opened")
-async def update_home_tab(client: WebClient, event: dict, logger: logging.Logger) -> None:
+def update_home_tab(client: WebClient, event: dict, logger: logging.Logger) -> None:
     try:
         with open('./views/home.json') as f:
             home = json.load(f)
-        await client.views_publish(user_id=event["user"], view=home)
+        client.views_publish(user_id=event["user"], view=home)
 
     except Exception as e:
         logger.error(f"Error publishing home tab: {e}")
 
 
 @app.action("button_click")
-async def action_button_click(ack: Callable, client: WebClient, body: dict, logger: logging.Logger) -> None:
+def action_button_click(ack: Callable, client: WebClient, body: dict, logger: logging.Logger) -> None:
     try:
-        await ack()
+        ack()
         with open('./views/movie_modal.json') as f:
             movie_modal = json.load(f)
-        await client.views_open(trigger_id=body["trigger_id"], view=movie_modal)
+        client.views_open(trigger_id=body["trigger_id"], view=movie_modal)
 
     except Exception as e:
         logger.error(f"Error loading movie search window: {e}")
@@ -40,9 +46,9 @@ async def action_button_click(ack: Callable, client: WebClient, body: dict, logg
 
 # https://slack.dev/bolt-python/concepts#view_submissions
 @app.view("movie_modal")
-async def handle_movie_submission(ack: Callable, body: dict, client: WebClient, logger: logging.Logger) -> None:
+def handle_movie_submission(ack: Callable, body: dict, client: WebClient, logger: logging.Logger) -> None:
 
-    await ack()
+    ack()
     user = body["user"]["id"]
     values = body["view"]["state"]["values"]
     movie_id = values["movie_selection"]["movie_search"]["selected_option"]["value"]
@@ -54,26 +60,30 @@ async def handle_movie_submission(ack: Callable, body: dict, client: WebClient, 
         data["original_title"], data["release_date"], data["overview"], poster_url)
     try:
         payload = "Movie info sent"
-        await client.chat_postMessage(blocks=movie_message,
-                                      channel=user, text=payload)
+        client.chat_postMessage(blocks=movie_message,
+                                channel=user, text=payload)
     except Exception as e:
         payload = "💩 something went wrong. Try again!"
         logger.error("Couldn't send movie details to user")
-        await client.chat_postMessage(text=payload, channel=user)
+        client.chat_postMessage(text=payload, channel=user)
 
 
 @app.options("movie_search")
-async def show_list_of_movies(ack: Callable) -> None:
+def show_list_of_movies(ack: Callable) -> None:
     # BUG: typeahead doesnt seem to be filtering on my external list
     movie_list = MovieApis.get_list_of_movies(5)
-    await ack(options=movie_list)
+    ack(options=movie_list)
 
 
 @app.action("movie_search")
-async def handle_action(ack: Callable) -> None:
-    await ack()
+def handle_action(ack: Callable) -> None:
+    ack()
 
 
-# Start your app
-if __name__ == "__main__":
-    app.start(port=int(os.environ.get("PORT", 3000)))
+def handler(event, context):
+    slack_handler = SlackRequestHandler(app=app)
+    return slack_handler.handle(event, context)
+
+# # For Local testing
+# if __name__ == "__main__":
+#     app.start(port=int(os.environ.get("PORT", 3000)))

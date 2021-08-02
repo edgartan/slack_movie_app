@@ -1,0 +1,39 @@
+service: slack-movie-app
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  # https://www.serverless.com/framework/docs/deprecations/#AWS_API_GATEWAY_NAME_STARTING_WITH_SERVICE
+  apiGateway:
+    shouldStartNameWithService: true
+  region: us-east-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
+      Resource: "*"
+  environment:
+    SERVERLESS_STAGE: ${opt:stage, 'dev'}
+
+# you can add packaging information here
+package:
+  include:
+    - app.py
+    - api.py
+    - utils.py
+    - views/*
+    - lib/*
+  exclude:
+    - README.md
+    - tests/*
+    - .serverless
+
+functions:
+  api:
+    handler: app.handler
+    events:
+      - http:
+          path: slack/events
+          method: post
