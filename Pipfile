@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 slack-bolt = "*"
 requests = "*"
-boto3 = "*"
 slack-sdk = "*"
 cachetools = "*"
 
