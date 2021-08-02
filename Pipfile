@@ -7,10 +7,7 @@ name = "pypi"
 slack-bolt = "*"
 requests = "*"
 boto3 = "*"
-zappa = "*"
-troposphere = "==2.7.0"
 slack-sdk = "*"
-aiohttp = "*"
 cachetools = "*"
 
 [dev-packages]
