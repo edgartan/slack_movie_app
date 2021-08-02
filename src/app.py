@@ -15,8 +15,8 @@ from api import MovieApis
 # Initializes app
 SlackRequestHandler.clear_all_log_handlers()
 logging.basicConfig(level=logging.DEBUG)
-app = App(token=os.environ.get("SLACK_BOT_TOKEN"),
-          signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
+app = App(token=utils.get_secret("SLACK_BOT_TOKEN"),
+          signing_secret=utils.get_secret("SLACK_SIGNING_SECRET"),
           process_before_response=True)
 
 

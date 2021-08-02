@@ -6,10 +6,11 @@ import json
 import logging
 import requests
 import cachetools.func
+import utils
 
 
 class MovieApis:
-    api_key = os.environ.get("API_KEY")
+    api_key = utils.get_secret("API_KEY"),
 
     # instance method
     @cachetools.func.ttl_cache(maxsize=20, ttl=300)
