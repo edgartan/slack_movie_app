@@ -3,19 +3,25 @@ This is a Slack app built with the [Bolt for Python framework][2] that pulls a l
 
 Contents
 ========
-- [](#)
+- [Slack Movie App](#slack-movie-app)
+- [Contents](#contents)
   - [Running locally](#running-locally)
     - [1. Setup environment variables](#1-setup-environment-variables)
     - [2. Setup your local project](#2-setup-your-local-project)
+    - [3. Uncomment out app code](#3-uncomment-out-app-code)
     - [3. Start servers](#3-start-servers)
     - [4. Configure your slack app](#4-configure-your-slack-app)
+  - [Deploying to AWS Lambda](#deploying-to-aws-lambda)
+    - [1. Setup environment](#1-setup-environment)
+    - [2. Deploy to AWS](#2-deploy-to-aws)
+    - [3. Add Environment Variables](#3-add-environment-variables)
+    - [4. Configure your slack app](#4-configure-your-slack-app-1)
   - [File/Folder Structure](#filefolder-structure)
   - [Testing](#testing)
   - [Approach](#approach)
   - [Roadmap](#roadmap)
   - [Contributing](#contributing)
   - [License](#license)
-
 ## Running locally
 
 ### 1. Setup environment variables
