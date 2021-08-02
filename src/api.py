@@ -1,4 +1,3 @@
-from _typeshed import Self
 import sys
 sys.path.insert(1, "lib/")
 # This going against PEP-8 will refactor once we have a build pipeline
