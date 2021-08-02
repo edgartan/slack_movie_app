@@ -84,6 +84,6 @@ def handler(event, context):
     slack_handler = SlackRequestHandler(app=app)
     return slack_handler.handle(event, context)
 
-# # Start your app
+# # For Local testing
 # if __name__ == "__main__":
 #     app.start(port=int(os.environ.get("PORT", 3000)))
