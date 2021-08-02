@@ -40,7 +40,12 @@ cd src
 # Setup virtual environment and install dependencies
 pipenv install
 ```
-
+### 3. Uncomment out app code
+```
+# For Local testing
+if __name__ == "__main__":
+  app.start(port=int(os.environ.get("PORT", 3000)))
+```
 ### 3. Start servers
 
 [Setup ngrok][3] to create a local requests URL for development.
@@ -139,7 +144,7 @@ As I finish items on my roadmap I will move them to the approach section. This r
 
 1. Script out deployment
 2. Create infrastructure as code (aws_cdk)
-3. Create CI/CD pipeline (github actions)
+3. Create CI/CD pipeline (github actions) to run tests, code coverage, dependency scanning etc.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
