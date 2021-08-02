@@ -1,17 +1,17 @@
 import sys
 sys.path.insert(1, "lib/")
-
+# This going against PEP-8 will refactor once we have a build pipeline
 import os
-import requests
-import cachetools.func
 import json
 import logging
+import requests
+import cachetools.func
 
 
 class MovieApis:
     api_key = os.environ.get("API_KEY")
 
-    @staticmethod
+    # instance method
     @cachetools.func.ttl_cache(maxsize=20, ttl=300)
     def get_movie_details(movie_id: str, region: str) -> dict:
         params = {
@@ -29,7 +29,7 @@ class MovieApis:
 
         return data
 
-    @staticmethod
+    # instance method
     @cachetools.func.ttl_cache(maxsize=5, ttl=300)
     def get_list_of_movies(pages: int) -> list:
         movie_list = []

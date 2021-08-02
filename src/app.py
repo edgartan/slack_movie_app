@@ -1,16 +1,15 @@
 import sys
 sys.path.insert(1, "lib/")
-
-import utils
-from api import MovieApis
+# This going against PEP-8 will refactor once we have a build pipeline
+import json
+import logging
+import os
+from typing import Callable
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
 from slack_sdk import WebClient
 from slack_bolt import App
-from typing import Callable
-import logging
-import json
-import os
-
+import utils
+from api import MovieApis
 
 
 # Initializes app

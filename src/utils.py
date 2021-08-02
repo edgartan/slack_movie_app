@@ -37,8 +37,3 @@ def create_message_blocks(title: str, date: str, overview: str, poster_url: str)
         }
     ]
     return movie_message
-
-
-# # Start your app
-# if __name__ == "__main__":
-#     convert_date()
